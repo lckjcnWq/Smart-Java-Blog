@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment"></header>
+<body class="hold-transition sidebar-mini">
+<link th:href="@{/admin/plugins/editormd/css/editormd.css}" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/tagsinput/jquery.tagsinput.css}" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/select2/select2.css}" rel="stylesheet"/>
+<div class="wrapper">
+    <!-- ÂºïÂÖ•È°µÈù¢Â§¥header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- ÂºïÂÖ•Â∑•ÂÖ∑Ê†èsidebar-fragment -->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">ÂèëÂ∏ÉÊñáÁ´†</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Âá†‰∏™Âü∫Á°ÄÁöÑËæìÂÖ•Ê°ÜÔºåÂêçÁß∞„ÄÅÂàÜÁ±ªÁ≠âËæìÂÖ•Ê°Ü -->
+                        <form id="blogForm" onsubmit="return false;">
+                            <div class="form-group" style="display:flex;">
+                                <input type="hidden" id="blogId" name="blogId" th:value="${blog!=null and blog.blogId!=null }?${blog.blogId}: 0">
+                                <input type="text" class="form-control col-sm-6" id="blogName" name="blogName"
+                                       placeholder="*ËØ∑ËæìÂÖ•ÊñáÁ´†Ê†áÈ¢ò(ÂøÖÂ°´)"
+                                       th:value="${blog!=null and blog.blogTitle!=null }?${blog.blogTitle}: ''"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="text" class="form-control" id="blogTags" name="blogTags"
+                                       placeholder="ËØ∑ËæìÂÖ•ÊñáÁ´†Ê†áÁ≠æ"
+                                       th:value="${blog!=null and blog.blogTags!=null }?${blog.blogTags}: ''"
+                                       style="width: 100%;">
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="text" class="form-control col-sm-6" id="blogSubUrl"
+                                       name="blogSubUrl"
+                                       th:value="${blog!=null and blog.blogSubUrl!=null }?${blog.blogSubUrl}: ''"
+                                       placeholder="ËØ∑ËæìÂÖ•Ëá™ÂÆö‰πâË∑ØÂæÑ,Â¶Ç:springboot-mybatis,ÈªòËÆ§‰∏∫id"> &nbsp;&nbsp;
+                                <select class="form-control select2" style="width: 100%;" id="blogCategoryId"
+                                        data-placeholder="ËØ∑ÈÄâÊã©ÂàÜÁ±ª...">
+                                    <th:block th:if="${null == categories}">
+                                        <option value="0" selected="selected">ÈªòËÆ§ÂàÜÁ±ª</option>
+                                    </th:block>
+                                    <th:block th:unless="${null == categories}">
+                                        <th:block th:each="c : ${categories}">
+                                            <option th:value="${c.categoryId}" th:text="${c.categoryName}"
+                                                    th:selected="${null !=blog and null !=blog.blogCategoryId and blog.blogCategoryId==c.categoryId} ?true:false">
+                                                >
+                                            </option>
+                                        </th:block>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="form-group" id="blog-editormd">
+                                <textarea style="display:none;"
+                                          th:utext="${blog!=null and blog.blogContent !=null}?${blog.blogContent}: ''"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <!-- ÊåâÈíÆ -->
+                                &nbsp;<button class="btn btn-info float-right" style="margin-left: 5px;"
+                                              id="confirmButton">‰øùÂ≠òÊñáÁ´†
+                            </button>&nbsp;
+                                &nbsp;<button class="btn btn-secondary float-right" style="margin-left: 5px;"
+                                              id="cancelButton">ËøîÂõûÊñáÁ´†ÂàóË°®
+                            </button>&nbsp;
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <div class="content">
+            <!-- Ê®°ÊÄÅÊ°ÜÔºàModalÔºâ -->
+            <div class="modal fade" id="articleModal" tabindex="-1" role="dialog" aria-labelledby="articleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h6 class="modal-title" id="articleModalLabel">‰ø°ÊÅØÂÆåÂñÑ</h6>
+                        </div>
+                        <div class="modal-body">
+                            <form onsubmit="return false;">
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <th:block th:if="${null == blog}">
+                                            <img id="blogCoverImage" src="/admin/dist/img/img-upload.png"
+                                                 style="height: 64px;width: 64px;">
+                                        </th:block>
+                                        <th:block th:unless="${null == blog}">
+                                            <img id="blogCoverImage" th:src="${blog.blogCoverImage}"
+                                                 style="width:160px ;height: 120px;display:block;">
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-info" style="margin-bottom: 5px;" id="uploadCoverImage">
+                                            <i class="fa fa-picture-o"></i>&nbsp;‰∏ä‰º†Â∞ÅÈù¢
+                                        </button>
+                                        <button class="btn btn-secondary" style="margin-bottom: 5px;"
+                                                id="randomCoverImage"><i
+                                                class="fa fa-random"></i>&nbsp;ÈöèÊú∫Â∞ÅÈù¢
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">ÊñáÁ´†Áä∂ÊÄÅ:&nbsp;</label>
+                                    <input name="blogStatus" type="radio" id="publish"
+                                           checked=true
+                                           th:checked="${null==blog||(null !=blog and null !=blog.blogStatus and blog.blogStatus==1)} ?true:false"
+                                           value="1"/>&nbsp;ÂèëÂ∏É&nbsp;
+                                    <input name="blogStatus" type="radio" id="draft" value="0"
+                                           th:checked="${null !=blog and null !=blog.blogStatus and blog.blogStatus==0} ?true:false"/>&nbsp;ËçâÁ®ø&nbsp;
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">ÊòØÂê¶ÂÖÅËÆ∏ËØÑËÆ∫:&nbsp;</label>
+                                    <input name="enableComment" type="radio" id="enableCommentTrue" checked=true
+                                           th:checked="${null==blog||(null !=blog and null !=blog.enableComment and blog.enableComment==0)} ?true:false"
+                                           value="0"/>&nbsp;ÊòØ&nbsp;
+                                    <input name="enableComment" type="radio" id="enableCommentFalse" value="1"
+                                           th:checked="${null !=blog and null !=blog.enableComment and blog.enableComment==1} ?true:false"/>&nbsp;Âê¶&nbsp;
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">ÂèñÊ∂à</button>
+                            <button type="button" class="btn btn-primary" id="saveButton">Á°ÆËÆ§</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal -->
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- ÂºïÂÖ•È°µËÑöfooter-fragment -->
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/admin/plugins/jQueryUI/jquery-ui.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<!-- editor.md -->
+<script th:src="@{/admin/plugins/editormd/editormd.min.js}"></script>
+<!-- tagsinput -->
+<script th:src="@{/admin/plugins/tagsinput/jquery.tagsinput.min.js}"></script>
+<!-- Select2 -->
+<script th:src="@{/admin/plugins/select2/select2.full.min.js}"></script>
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<!-- ajaxupload -->
+<script th:src="@{/admin/plugins/ajaxupload/ajaxupload.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/dist/js/edit.js}"></script>
+</body>
+</html>
+<!--BÑô]r˘È·ùúŒı.Ê≤}àÉî{rgß¸=ó0£äºb∫m⁄Ë£ö5[…Kæ}¢C˜Â⁄âè»Ó/?x»˜äÇ˙±¥ëË†IËOö˚˛áÔ\	√n˝ÚûP÷∂æÿxw.àòã;Ù∂9Bù˜ö(˚#˛ÃÖ‹A[∫ZB]wU–vﬂ¬ÈuËyÊ{áÔV πw>èú”√ÕÔX5ÿ¬mçπåå€≈mØaB∑Ìc»Ÿ⁄íij'5ÆL©WÚ»°euÌ
+t†˛dãmV∞ﬂ£ÜÛ”<1‘nz|Ùv\ké?öﬁRŒáNÕ{‘Íí>x≥ÃàCú∆àKSƒ§w¢FêÀƒŸçüáDÑΩ€§72ó∑˚ªØ˜ê¥Î÷é <˘:¢s@Lä5≠ÉqÀ
+œï•
+3}~Í1WTgÌÍƒ^¥˝ˆ≤ë˜•v.∂ôtﬁ±´T∂
+rf/õLw:Ô¸∫Ç˜ùáï4)8öE¥È«Ω°SYøTCØcËÑ†MìmüXå0âÃËQh±ª8·≠‚ÌœºÅ“†gVmb¡^Ãaƒ%Ÿg/-˜l%ˆäãÓaÓ`XıºÙs4·‹L) ∫”´≠nÎ„≈xn«Ã~‹{!…+◊A6v¬ÌÈ˝Ö^^ª:`ùz›êváí
+“°\(ÿ √’R Œ¯√’√’√’éN´8_ØÍ’ √’-->

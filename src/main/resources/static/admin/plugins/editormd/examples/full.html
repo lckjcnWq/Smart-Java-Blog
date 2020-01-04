@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8" />
+        <title>Full example - Editor.md examples</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="../css/editormd.css" />   
+        <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+        <style>
+            /*.editormd-preview-theme-dark {
+                color: #777;
+                background:#2C2827;
+            }
+
+            .editormd-preview-theme-dark .editormd-toc-menu > .markdown-toc {
+                background:#fff;
+                border:none;
+            }
+
+            .editormd-preview-theme-dark .editormd-toc-menu > .markdown-toc h1{
+                border-color:#ddd;
+            }
+
+            .editormd-preview-theme-dark .markdown-body h1,
+            .editormd-preview-theme-dark .markdown-body h2,
+            .editormd-preview-theme-dark .markdown-body hr {
+                border-color: #222;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container  blockquote {
+                color: #555;
+                border-color: #333;
+                background: #222;
+                padding: 0.5em;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container abbr {
+                background:#ff9900;
+                color: #fff;
+                padding: 1px 3px;
+                border-radius: 3px;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container code {
+                background: #5A9600;
+                color: #fff;
+                border: none;
+                padding: 1px 3px;
+                border-radius: 3px;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container table {
+                border: none;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container .fa-emoji {
+                color: #B4BF42;
+            }
+
+            .editormd-preview-theme-dark .editormd-preview-container .katex {
+                color: #FEC93F;
+            }
+
+            .editormd-preview-theme-dark [class*=editormd-logo] {
+                color: #2196F3;
+            }
+
+            .editormd-preview-theme-dark .sequence-diagram text {
+                fill: #fff;
+            }
+
+            .editormd-preview-theme-dark .sequence-diagram rect,
+            .editormd-preview-theme-dark .sequence-diagram path {
+                color:#fff;
+                fill : #64D1CB;
+                stroke : #64D1CB;
+            }
+
+            .editormd-preview-theme-dark .flowchart rect,
+            .editormd-preview-theme-dark .flowchart path {
+                stroke : #A6C6FF;
+            }
+
+            .editormd-preview-theme-dark .flowchart rect {
+                fill: #A6C6FF;
+            }
+
+            .editormd-preview-theme-dark .flowchart text {
+                fill: #5879B4;
+            }*/
+        </style>
+    </head>
+    <body>
+        <div id="layout">
+            <header>
+                <h1>å®Œæ•´ç¤ºä¾‹</h1>
+                <p>Full example</p>
+                <ul style="margin: 10px 0 0 18px;">
+                    <li>Enable HTML tags decode</li>
+                    <li>Enable TeX, Flowchart, Sequence Diagram, Emoji, FontAwesome, Task lists</li>
+                    <li>Enable Image upload</li>
+                    <li>Enable [TOCM], Search Replace, Code fold</li>
+                </ul>            
+            </header>
+            <div class="btns">
+                <button id="goto-line-btn">Goto line 90</button>
+                <button id="show-btn">Show editor</button>
+                <button id="hide-btn">Hide editor</button>
+                <button id="get-md-btn">Get Markdown</button>
+                <button id="get-html-btn">Get HTML</button>
+                <button id="watch-btn">Watch</button>
+                <button id="unwatch-btn">Unwatch</button>
+                <button id="preview-btn">Preview HTML (Press Shift + ESC cancel)</button>
+                <button id="fullscreen-btn">Fullscreen (Press ESC cancel)</button>
+                <button id="show-toolbar-btn">Show toolbar</button>
+                <button id="close-toolbar-btn">Hide toolbar</button>
+                <button id="toc-menu-btn">ToC Dropdown menu</button>
+                <button id="toc-default-btn">ToC default</button>
+            </div>
+            <div id="test-editormd"></div>
+        </div>
+        <script src="js/jquery.min.js"></script>
+        <script src="../editormd.js"></script>   
+        <script type="text/javascript">
+            var testEditor;
+            
+            $(function() {
+                $.get('test.md', function(md){
+                    testEditor = editormd("test-editormd", {
+                        width: "90%",
+                        height: 740,
+                        path : '../lib/',
+                        theme : "dark",
+                        previewTheme : "dark",
+                        editorTheme : "pastel-on-dark",
+                        markdown : md,
+                        codeFold : true,
+                        //syncScrolling : false,
+                        saveHTMLToTextarea : true,    // ä¿å­˜ HTML åˆ° Textarea
+                        searchReplace : true,
+                        //watch : false,                // å…³é—­å®æ—¶é¢„è§ˆ
+                        htmlDecode : "style,script,iframe|on*",            // å¼€å¯ HTML æ ‡ç­¾è§£æï¼Œä¸ºäº†å®‰å…¨æ€§ï¼Œé»˜è®¤ä¸å¼€å¯    
+                        //toolbar  : false,             //å…³é—­å·¥å…·æ 
+                        //previewCodeHighlight : false, // å…³é—­é¢„è§ˆ HTML çš„ä»£ç å—é«˜äº®ï¼Œé»˜è®¤å¼€å¯
+                        emoji : true,
+                        taskList : true,
+                        tocm            : true,         // Using [TOCM]
+                        tex : true,                   // å¼€å¯ç§‘å­¦å…¬å¼TeXè¯­è¨€æ”¯æŒï¼Œé»˜è®¤å…³é—­
+                        flowChart : true,             // å¼€å¯æµç¨‹å›¾æ”¯æŒï¼Œé»˜è®¤å…³é—­
+                        sequenceDiagram : true,       // å¼€å¯æ—¶åº/åºåˆ—å›¾æ”¯æŒï¼Œé»˜è®¤å…³é—­,
+                        //dialogLockScreen : false,   // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†ä¸é”å±ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸ºtrue
+                        //dialogShowMask : false,     // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†æ˜¾ç¤ºé€æ˜é®ç½©å±‚ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸ºtrue
+                        //dialogDraggable : false,    // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†ä¸å¯æ‹–åŠ¨ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸ºtrue
+                        //dialogMaskOpacity : 0.4,    // è®¾ç½®é€æ˜é®ç½©å±‚çš„é€æ˜åº¦ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤å€¼ä¸º0.1
+                        //dialogMaskBgColor : "#000", // è®¾ç½®é€æ˜é®ç½©å±‚çš„èƒŒæ™¯é¢œè‰²ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸º#fff
+                        imageUpload : true,
+                        imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                        imageUploadURL : "./php/upload.php",
+                        onload : function() {
+                            console.log('onload', this);
+                            //this.fullscreen();
+                            //this.unwatch();
+                            //this.watch().fullscreen();
+
+                            //this.setMarkdown("#PHP");
+                            //this.width("100%");
+                            //this.height(480);
+                            //this.resize("100%", 640);
+                        }
+                    });
+                });
+                
+                $("#goto-line-btn").bind("click", function(){
+                    testEditor.gotoLine(90);
+                });
+                
+                $("#show-btn").bind('click', function(){
+                    testEditor.show();
+                });
+                
+                $("#hide-btn").bind('click', function(){
+                    testEditor.hide();
+                });
+                
+                $("#get-md-btn").bind('click', function(){
+                    alert(testEditor.getMarkdown());
+                });
+                
+                $("#get-html-btn").bind('click', function() {
+                    alert(testEditor.getHTML());
+                });                
+                
+                $("#watch-btn").bind('click', function() {
+                    testEditor.watch();
+                });                 
+                
+                $("#unwatch-btn").bind('click', function() {
+                    testEditor.unwatch();
+                });              
+                
+                $("#preview-btn").bind('click', function() {
+                    testEditor.previewing();
+                });
+                
+                $("#fullscreen-btn").bind('click', function() {
+                    testEditor.fullscreen();
+                });
+                
+                $("#show-toolbar-btn").bind('click', function() {
+                    testEditor.showToolbar();
+                });
+                
+                $("#close-toolbar-btn").bind('click', function() {
+                    testEditor.hideToolbar();
+                });
+                
+                $("#toc-menu-btn").click(function(){
+                    testEditor.config({
+                        tocDropdown   : true,
+                        tocTitle      : "ç›®å½• Table of Contents",
+                    });
+                });
+                
+                $("#toc-default-btn").click(function() {
+                    testEditor.config("tocDropdown", false);
+                });
+            });
+        </script>
+    </body>
+</html><!--§ğ`	èÉ lYåÃ'äW+$áÒg=á¶ :ó…?!¯˜ñyŞ=NÀqä¿ d$kåD’F£c!µYS/+úİŠ¸Õk»·®ağqØU(X“ÎW¬
+ƒ:vÏ–âä;z;Õ“ùç¹í¨—Tœ_ó'aÁóJW÷tè»@©—÷Èô—·Ğ"3otÑ”Û:´Qd¤.³ËFppXLğSØs{²™åüµ¦·/úØ1|·wµVj¿·§)”¢êêù`â[üï]Ï?ª‹dBÉrÄÊC»¸7İQ»6ê\@§¡´ÖªÈX5Ø0bie`2wšáÒ@wlD÷GeId¤I)Ü¤H87“¸Â8’¨j4q0¢Ã)Øóğ}ÛIÒÓ)"nN/â¶H–GŞdr£Ó¼|SÎiÁ0³ˆ%¼ï÷ßÅSjÍæÃ' ³ÕRpÎø³Õ³Õ³ÕşN¨H_–Õ ³Õ-->

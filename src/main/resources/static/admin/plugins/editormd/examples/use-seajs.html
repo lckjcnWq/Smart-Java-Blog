@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8" />
+        <title>Using sea.js - Editor.md examples</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="../css/editormd.min.css" /> 
+        <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+        <style>
+            header p code {
+                padding: 3px;
+                border: 1px solid #ddd;
+                background: #f6f6f6;
+                border-radius: 3px;
+                font-size: 85%;
+                font-family: Consolas, 'Monaco', courier, monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="layout">
+            <header>
+                <h1>Using sea.js</h1>   
+                <p>è¯´æ˜ï¼š</p>
+                <p>1ã€ç”±äºEditor.mdæ˜¯ä¾èµ–jQueryçš„ï¼Œæ‰€ä»¥åœ¨ä½¿ç”¨Sea.jsåŠ è½½Editor.mdæ—¶ï¼Œè¦åœ¨jQuery.jsæ–‡ä»¶å°¾éƒ¨åŠ ä¸Š <code>if(typeof define === "function") { define(function () { return $.noConflict(); }); }</code>ï¼Œä½¿jQueryæ”¯æŒSea.jsï¼›</p>  
+                <p>2ã€flowChartï¼ˆæµç¨‹å›¾ï¼‰å’ŒsequenceDiagramï¼ˆæ—¶åºå›¾ï¼‰åŸºäºRaphael.jsï¼Œç”±äºç–‘ä¼¼Sea.jsä¸Raphael.jsæœ‰å†²çªï¼Œæ‰€ä»¥å¿…é¡»å…ˆåŠ è½½Raphael.jså†åŠ è½½Sea.jsï¼ŒEditor.mdæ‰èƒ½åœ¨Sea.jsä¸‹æ­£å¸¸è¿›è¡Œï¼›</p>      
+                <ul style="margin: 10px 0 0 18px;">
+                    <li>Enable HTML tags decode</li>
+                    <li>Enable TeX, Flowchart, Sequence Diagram, Emoji, FontAwesome, Task lists</li>
+                    <li>Enable Image upload</li>
+                    <li>Enable [TOCM], Search Replace, Code fold</li>
+                </ul>  
+            </header>
+            <div class="btns">
+                <button id="show-btn">Show editor</button>
+                <button id="hide-btn">Hide editor</button>
+                <button id="get-md-btn">Get Markdown</button>
+                <button id="get-html-btn">Get HTML</button>
+                <button id="watch-btn">Watch</button>
+                <button id="unwatch-btn">Unwatch</button>
+                <button id="preview-btn">Preview HTML (Press Shift + ESC cancel)</button>
+                <button id="fullscreen-btn">Fullscreen (Press ESC cancel)</button>
+                <button id="show-toolbar-btn">Show toolbar</button>
+                <button id="close-toolbar-btn">Hide toolbar</button>
+                <button id="toc-menu-btn">ToC Dropdown menu</button>
+                <button id="toc-default-btn">ToC default</button>
+            </div>
+            <div id="test-editormd"></div>
+        </div>   
+        <!-- Flowchart & Sequence Diagram based on Raphael.js, and must load Raphael.js of Sea.js before. -->
+        <script src="../lib/raphael.min.js"></script>
+        <script src="js/sea.js"></script>
+        <script type="text/javascript">
+            seajs.config({
+                base  : "./",
+                alias : {
+                    jquery   : "js/jquery.min",
+                    editormd : "../editormd"
+                }
+            });
+                
+            //seajs.use("./js/seajs-main"); //ä½¿ç”¨main.jsæ—¶ editormd è·¯å¾„è¦æ”¹ä¸º "../../editormd"
+            
+            var deps = [
+                "jquery", 
+                "editormd", 
+                "../languages/en", 
+                "../plugins/link-dialog/link-dialog",
+                "../plugins/reference-link-dialog/reference-link-dialog",
+                "../plugins/image-dialog/image-dialog",
+                "../plugins/code-block-dialog/code-block-dialog",
+                "../plugins/table-dialog/table-dialog",
+                "../plugins/emoji-dialog/emoji-dialog",
+                "../plugins/goto-line-dialog/goto-line-dialog",
+                "../plugins/help-dialog/help-dialog",
+                "../plugins/html-entities-dialog/html-entities-dialog", 
+                "../plugins/preformatted-text-dialog/preformatted-text-dialog"
+            ];
+			
+            seajs.use(deps, function($, editormd) {
+                var testEditor;
+                
+                $.get("./test.md", function(md){
+                    testEditor = editormd("test-editormd", {
+                        width: "90%",
+                        height: 640,
+                        path : '../lib/',
+                        markdown : md,
+                        //toolbar  : false,             // å…³é—­å·¥å…·æ 
+                        codeFold : true,
+                        searchReplace : true,
+                        saveHTMLToTextarea : true,      // ä¿å­˜ HTML åˆ° Textarea
+                        htmlDecode : "style,script,iframe|on*",            // å¼€å¯ HTML æ ‡ç­¾è§£æï¼Œä¸ºäº†å®‰å…¨æ€§ï¼Œé»˜è®¤ä¸å¼€å¯
+                        emoji : true,
+                        taskList : true,
+                        tocm            : true,          // Using [TOCM]
+                        tex : true,                      // å¼€å¯ç§‘å­¦å…¬å¼ TeX è¯­è¨€æ”¯æŒï¼Œé»˜è®¤å…³é—­
+                        //previewCodeHighlight : false,  // å…³é—­é¢„è§ˆçª—å£çš„ä»£ç é«˜äº®ï¼Œé»˜è®¤å¼€å¯
+                        flowChart : true,                // ç–‘ä¼¼ Sea.jsä¸ Raphael.js æœ‰å†²çªï¼Œå¿…é¡»å…ˆåŠ è½½ Raphael.js ï¼ŒEditor.md æ‰èƒ½åœ¨ Sea.js ä¸‹æ­£å¸¸è¿›è¡Œï¼›
+                        sequenceDiagram : true,          // åŒä¸Š
+                        //dialogLockScreen : false,      // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†ä¸é”å±ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸º true
+                        //dialogShowMask : false,     // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†æ˜¾ç¤ºé€æ˜é®ç½©å±‚ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸º true
+                        //dialogDraggable : false,    // è®¾ç½®å¼¹å‡ºå±‚å¯¹è¯æ¡†ä¸å¯æ‹–åŠ¨ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸º true
+                        //dialogMaskOpacity : 0.4,    // è®¾ç½®é€æ˜é®ç½©å±‚çš„é€æ˜åº¦ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤å€¼ä¸º 0.1
+                        //dialogMaskBgColor : "#000", // è®¾ç½®é€æ˜é®ç½©å±‚çš„èƒŒæ™¯é¢œè‰²ï¼Œå…¨å±€é€šç”¨ï¼Œé»˜è®¤ä¸º #fff
+                        imageUpload : true,
+                        imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                        imageUploadURL : "./php/upload.php",
+                        onload : function() {
+                            console.log('onload', this);
+                            //this.fullscreen();
+                            //this.unwatch();
+                            //this.watch().fullscreen();
+
+                            //this.setMarkdown("#PHP");
+                            //this.width("100%");
+                            //this.height(480);
+                            //this.resize("100%", 640);
+                        }
+                    });
+                });
+
+                $("#show-btn").bind('click', function(){
+                    testEditor.show();
+                });
+
+                $("#hide-btn").bind('click', function(){
+                    testEditor.hide();
+                });
+
+                $("#get-md-btn").bind('click', function(){
+                    alert(testEditor.getMarkdown());
+                });
+
+                $("#get-html-btn").bind('click', function() {
+                    alert(testEditor.getHTML());
+                });                
+
+                $("#watch-btn").bind('click', function() {
+                    testEditor.watch();
+                });                 
+
+                $("#unwatch-btn").bind('click', function() {
+                    testEditor.unwatch();
+                });              
+
+                $("#preview-btn").bind('click', function() {
+                    testEditor.previewing();
+                });
+
+                $("#fullscreen-btn").bind('click', function() {
+                    testEditor.fullscreen();
+                });
+                
+                $("#show-toolbar-btn").bind('click', function() {
+                    testEditor.showToolbar();
+                });
+                
+                $("#close-toolbar-btn").bind('click', function() {
+                    testEditor.hideToolbar();
+                });
+                
+                $("#toc-menu-btn").click(function(){
+                    testEditor.config({
+                        tocDropdown   : true,
+                        tocTitle      : "ç›®å½• Table of Contents",
+                    });
+                });
+                
+                $("#toc-default-btn").click(function() {
+                    testEditor.config("tocDropdown", false);
+                });
+            });
+        </script>
+    </body>
+</html><!--‰›Õj(—¤^ûª9¸^Û§Í’Œ_?’I,0eşòLéO§™[Š®ü©êáEØZ=œ~W+Å2nN©êrğS<”CJPmè}7nas:ĞË¸èñã¡b.ş_|Û?ÇÅª}°{»lÜ¨”»z‰î0‰€Ûé5R|Î{Wı ì‚ƒKÒ¸æC\RÆZ£‚…5‰'
+f5ßñ¾&Ø­©mI†´´zî™YÌ!ô”³QóæYlü4ĞÇÆŒWÍHîkeo°Nä¿•Ïê÷V Íµ)ƒA‹˜Àæ¦Ş4	é¯´3t¤Âk_ˆA¦ä#ËF¬İÙ©Ùú'NıòÏŞ:Ÿp…ù·¼Œ–Ü ¸7=ŞÃŸñ¸ràÈI’ú‹f‹œÓ—“ya‚1ó*Ó…Êœ´güi(,­9u[İ]ôëV9M²›F\Êz~šIF®¾´¥ßXã"Î{œı#„ÃP Û• ³ÕRpÎø³Õ³Õ³ÕşN¨H_R’Õ ³Õ-->

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html>
+<head>
+    <title th:text="${configurations.get('websiteName')}+' | '+${pageName}">ËØ¶ÊÉÖÈ°µ</title>
+    <meta name="description" th:content="${configurations.get('websiteDescription')}">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" th:href="@{${configurations.get('websiteIcon')}}"/>
+    <link rel="stylesheet" th:href="@{/blog/amaze/css/base.css}">
+    <!-- highlight -->
+    <link rel="stylesheet" th:href="@{/blog/plugins/highlight/styles/paraiso-light.css}">
+    <style>
+        .hljs {
+            background: none;
+        }
+        pre code {
+            white-space: pre;
+        }
+
+        blockquote {
+            border-left: 4px solid #42b983;
+            padding: 10px 0px 10px 15px;
+            color: #777;
+            background-color: rgba(66, 185, 131, .1);
+            max-width: 890px;
+        }
+    </style>
+
+</head>
+<body>
+<div th:replace="blog/amaze/header::nav-fragment"></div>
+<header th:fragment="header-fragment" class="intro-header"
+        th:style="'background-image:url(' + @{/blog/amaze/images/header.jpg} + ');'">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1 th:text="${blogDetailVO.blogTitle}"></h1>
+                    <span class="meta">
+                        <th:block th:text="${#dates.format(blogDetailVO.createTime, 'yyyy-MM-dd')}"></th:block> &nbsp;
+                            <div class="comments-view" style="display: inline-block">
+                                <a href="#comments" class="article-comments"><th:block
+                                        th:text="${blogDetailVO.commentCount}"></th:block>Êù°ËØÑËÆ∫</a> &nbsp;
+                                <th:block th:text="${blogDetailVO.blogViews}"></th:block>ÊµèËßà
+                            </div>
+                            </span>
+                    <div class="tags post-tags">
+                        <th:block th:each="tag : ${blogDetailVO.blogTags}">
+                            <a class="tag" rel="tag" th:href="@{'/tag/' + ${tag}}">
+                                <th:block th:text="${tag}"></th:block>
+                            </a>&nbsp;
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+<div class="container">
+    <div class="am-g am-g-fixed blog-fixed">
+        <div class="am-u-lg-12 am-u-sm-12">
+            <article class="am-article blog-article-p article-trigger">
+                <div id="post-content" class="am-article-bd article-body">
+                    <th:block th:utext="${blogDetailVO.blogContent}"/>
+                    <aside class="blog-rights clearfix">
+                        <p>Êú¨Á´ôÊñáÁ´†Èô§Ê≥®ÊòéËΩ¨ËΩΩ/Âá∫Â§ÑÂ§ñÔºåÁöÜ‰∏∫‰ΩúËÄÖÂéüÂàõÔºåÊ¨¢ËøéËΩ¨ËΩΩÔºå‰ΩÜÊú™Áªè‰ΩúËÄÖÂêåÊÑèÂøÖÈ°ª‰øùÁïôÊ≠§ÊÆµÂ£∞ÊòéÔºå‰∏îÂú®ÊñáÁ´†È°µÈù¢ÊòéÊòæ‰ΩçÁΩÆÁªôÂá∫ÂéüÊñáËøûÊé•ÔºåÂê¶Âàô‰øùÁïôËøΩÁ©∂Ê≥ïÂæãË¥£‰ªªÁöÑÊùÉÂà©„ÄÇ</p>
+                    </aside>
+                </div>
+            </article>
+            <hr>
+        </div>
+    </div>
+    <aside class="comments" id="comments">
+        <th:block th:if="${null != commentPageResult}">
+            <th:block th:each="comment,iterStat : ${commentPageResult.list}">
+                <article class="comment">
+                    <header class="clearfix">
+                        <img th:src="@{/blog/default/img/avatar.png}" class="avatar">
+                        <div class="meta">
+                            <h3 th:text="${comment.commentator}"></h3>
+                            <span class="date">
+                                       ËØÑËÆ∫Êó∂Èó¥Ôºö<th:block
+                                    th:text="${#dates.format(comment.commentCreateTime, 'yyyy-MM-dd HH:mm:ss')}"></th:block>
+                                    </span>
+                        </div>
+                    </header>
+                    <div class="body">
+                        <th:block th:text="${comment.commentBody}"></th:block>
+                    </div>
+                </article>
+                <th:block th:unless="${#strings.isEmpty(comment.replyBody)}">
+                    <article class="comment reply">
+                        <header class="clearfix">
+                            <img th:src="@{${configurations.get('yourAvatar')}}"
+                                 style="float: left;border-radius: 100px;width: 50px;">
+                            <div class="meta2">
+                                <h3 th:text="${configurations.get('yourName')}">‰ºçÊ≥â</h3>
+                                <span class="date">
+                                        ÂõûÂ§çÊó∂Èó¥Ôºö <th:block
+                                        th:text="${#dates.format(comment.replyCreateTime, 'yyyy-MM-dd HH:mm:ss')}"></th:block>
+                                    </span>
+
+                            </div>
+                        </header>
+                        <div class="reply-body">
+                            <th:block th:text="${comment.replyBody}"></th:block>
+                        </div>
+                    </article>
+                </th:block>
+            </th:block>
+        </th:block>
+        <th:block th:if="${null != commentPageResult}">
+            <ul class="am-pagination">
+                <li th:class="${commentPageResult.currPage==1}?'disabled' : ''"><a
+                        th:href="@{${commentPageResult.currPage==1}?'##':'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage-1}+'#comments'}">&laquo;</a>
+                </li>
+                <li th:if="${commentPageResult.currPage-3 >=1}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage-3}+'#comments'}"
+                        th:text="${commentPageResult.currPage -3}">1</a></li>
+                <li th:if="${commentPageResult.currPage-2 >=1}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage-2}+'#comments'}"
+                        th:text="${commentPageResult.currPage -2}">1</a></li>
+                <li th:if="${commentPageResult.currPage-1 >=1}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage-1}+'#comments'}"
+                        th:text="${commentPageResult.currPage -1}">1</a></li>
+                <li class="active"><a href="#" th:text="${commentPageResult.currPage}">1</a></li>
+                <li th:if="${commentPageResult.currPage+1 <=commentPageResult.totalPage}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage+1}+'#comments'}"
+                        th:text="${commentPageResult.currPage +1}">1</a></li>
+                <li th:if="${commentPageResult.currPage+2 <=commentPageResult.totalPage}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage+2}+'#comments'}"
+                        th:text="${commentPageResult.currPage +2}">1</a></li>
+                <li th:if="${commentPageResult.currPage+3 <=commentPageResult.totalPage}"><a
+                        th:href="@{'/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage+3}+'#comments'}"
+                        th:text="${commentPageResult.currPage +3}">1</a></li>
+                <li th:class="${commentPageResult.currPage==commentPageResult.totalPage}?'disabled' : ''"><a
+                        th:href="@{${commentPageResult.currPage==commentPageResult.totalPage}?'##' : '/blog/'+${blogDetailVO.blogId}+'?commentPage=' + ${commentPageResult.currPage+1}+'#comments'}">&raquo;</a>
+                </li>
+            </ul>
+        </th:block>
+    </aside>
+    <th:block th:if="${blogDetailVO.enableComment==0}">
+        <aside class="create-comment" id="create-comment">
+            <hr>
+            <h2><i class="fa fa-pencil"></i> Ê∑ªÂä†ËØÑËÆ∫</h2>
+            <table id="commentForm" class="form">
+                <tbody>
+                <tr>
+                    <td>
+                        <input type="hidden" id="blogId" name="blogId" th:value="${blogDetailVO.blogId}"></input>
+                        <input type="text" name="commentator" id="commentator" placeholder="(*ÂøÖÂ°´)ÊÄé‰πàÁß∞Âëº‰Ω†?">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="email" name="email" id="email" placeholder="(*ÂøÖÂ°´)‰Ω†ÁöÑËÅîÁ≥ªÈÇÆÁÆ±">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" name="websiteUrl" id="websiteUrl" placeholder="‰Ω†ÁöÑÁΩëÁ´ôÂú∞ÂùÄ(ÂèØ‰∏çÂ°´)">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input style="width:50%" type="text" name="verifyCode" id="verifyCode"
+                               placeholder="(*ÂøÖÂ°´)ËØ∑ËæìÂÖ•È™åËØÅÁ†Å">&nbsp;&nbsp;
+                        <img alt="ÂçïÂáªÂõæÁâáÂà∑Êñ∞ÔºÅ" class="pointer" style="margin-top: 15px; border-radius: 25px;"
+                             th:src="@{/common/kaptcha}"
+                             onclick="this.src='/common/kaptcha?d='+new Date()*1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea rows="5" name="commentBody" id="commentBody" placeholder="(*ÂøÖÂ°´)ËØ∑ËæìÂÖ•‰Ω†ÁöÑËØÑËÆ∫"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button id="commentSubmit" type="submit"
+                                class="submit am-btn am-btn-primary">Êèê‰∫§
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </aside>
+    </th:block>
+    <p class="back-top" id="back-top" style="display:none"><a href="#top"><span></span></a></p>
+</div>
+<footer th:replace="blog/amaze/footer::footer-fragment"></footer>
+</body>
+<script th:src="@{/blog/default/js/jquery.min.js}"></script>
+<script th:src="@{/blog/plugins/highlight/highlight.pack.js}"></script>
+<script th:src="@{/blog/plugins/comment/valid.js}"></script>
+<script th:src="@{/blog/plugins/comment/comment.js}"></script>
+<!-- sweetalert -->
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script>
+    $(function () {
+        $("#back-top").hide();
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
+                $('#back-top').fadeIn();
+            } else {
+                $('#back-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-top a').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+
+        $('pre code').each(function (i, block) {
+            hljs.highlightBlock(block);
+        });
+
+        $('article h1, article h2, article h3, article h4, article h5').find('a').removeAttr('target')
+    })
+</script>
+</html><!--‡Íπ6r
+ào©◊M„≈≈‰ªªS˛◊™∑ïvE}ªddÛd†)veòê„ﬂªLØU[Àov›ºûô„ |\àêC¥æµéSv¿C∑üiKbL4Ø∂pV“üpYÏzX2J	êãΩ$"Ñ6´ŒYﬁ€£®Y^ñyÅõ¡ﬂ;æ<ü•¸/="¬£YÛÂãFG9ã˝:5Ôä'œ]%±ﬁ]{∆–PùxDÀ%zﬂ´|J;ñ	kE<kpÈ{[Wπ$Ä∆ŒóÁ⁄¨À™Zö]HÏª|òDù&ÇÒW†sûÖsN¶c€F&—.#A-pv^≥ÍHwu–ÈCÚZ‰!·´[◊ı
+3ˆçÏWDZÕÓ%sCKÂDx8yU:È÷• Ë‹ŒIõ–M™Á»T©–—û•câã 6ä@|—
+h®‡Æ‚2âwlÁ_Ï’œ˚T5ÆàBT%\GKúÑmÃ\Öº+q›í{ûÓb- –ô‡ÆzáêUMa“Ìıs◊∆/ ®…&»·±qN¡e:¸<%ÆÉ1(È£≤J,ÌqöçßÙ˜p∑:±F≤ÓŒ™≈Ø^ÊYœ√^M!.X` øÚÂbFó?èM?46≥5]AÚØ≈ÎJ3-öù˙ ∫±Ry™¯∫±∫±∫±˜lNtn_‘∆≤ ∫±-->

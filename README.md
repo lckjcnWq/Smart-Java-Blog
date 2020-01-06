@@ -1,10 +1,8 @@
 # My Blog
 
-![personal-blog](static-files/personal-blog.png)
 
 **坚持不易，各位朋友如果觉得项目还不错的话可以给项目一个 star 吧，也是对我一直更新代码的一种鼓励啦，谢谢各位的支持。**
 
-![my-blog-info](static-files/my-blog-info.png)
 
 - **你可以拿它作为博客模板，因为 My Blog 界面十分美观简洁，满足私人博客的一切要求；**
 - **你也可以把它作为 SpringBoot 技术栈的学习项目，My Blog也足够符合要求，且代码和功能完备；**
